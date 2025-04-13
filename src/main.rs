@@ -90,6 +90,8 @@ EDITOR               - Path to your preferred text editor
 > CODE PAGES <"#
             );
             print_codepage_help();
+
+            return Ok(());
         }
     }
 
