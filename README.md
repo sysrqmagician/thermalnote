@@ -1,4 +1,4 @@
-# Thermalnote
+# thermalnote
 
 A terminal utility that lets you quickly write and print notes on a thermal printer.
 
