@@ -1,0 +1,15 @@
+[package]
+name = "thermalnote"
+version = "0.1.0"
+edition = "2024"
+description = "A simple utility to print notes using thermal printers"
+license = "MIT"
+repository = "https://github.com/sysrqmagician/thermalnote"
+keywords = ["thermal", "printer", "notes", "cli", "utility"]
+categories = ["command-line-utilities"]
+readme = "README.md"
+
+[dependencies]
+anyhow = "1.0.97"
+escpos = { version = "0.15.1", features = ["usb"] }
+rusb = "0.9.4"
