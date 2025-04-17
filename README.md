@@ -13,7 +13,12 @@ Thermalnote opens your preferred text editor, allows you to compose a note, and 
 - An ESC/POS-capable USB thermal printer
 - Text editor of your choice
 
-### Cargo
+### Downloading
+
+#### Pre-built from GitHub releases
+Download the binary for your platform from [the latest release](https://github.com/sysrqmagician/thermalnote/releases/latest).
+
+#### Building using Cargo
 
 ```bash
 cargo install thermalnote
