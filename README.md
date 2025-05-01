@@ -33,6 +33,7 @@ Thermalnote requires the following environment variables to be set:
 | `THERMALNOTE_VENDOR` | Vendor ID of your thermal printer (hex without 0x prefix) | `0ed6` |
 | `THERMALNOTE_PRODUCT` | Product ID of your thermal printer (hex without 0x prefix) | `06a6` |
 | `THERMALNOTE_CODEPAGE` | Character encoding for text | `PC437` or `WPC1252` |
+| `THERMALNOTE_ARCHIVEDIR` | OPTIONALLY, directory to archive notes in | `/home/user/thermalnotes` |
 | `EDITOR` | Path to your preferred text editor | `/usr/bin/nano` or `/usr/bin/vim` |
 
 You can find your printer's vendor and product IDs using:
