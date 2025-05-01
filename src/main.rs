@@ -63,11 +63,11 @@ fn print_codepage_help() {
     println!("{}", last.0);
 }
 
-fn temp_file_name() -> String {
-    format!(
+fn temp_file_name() -> Result<String> {
+    Ok(format!(
         "thermalnote_{}",
         SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis()
-    )
+    ))
 }
 
 fn main() -> Result<()> {
@@ -132,7 +132,7 @@ EDITOR                 - Path to your preferred text editor
     };
 
     let mut input_path = std::env::temp_dir();
-    input_path.push(temp_file_name());
+    input_path.push(temp_file_name()?);
 
     let mut cmd = Command::new(env::var("EDITOR").context("reading EDITOR")?)
         .arg(input_path.as_os_str())
@@ -156,7 +156,7 @@ EDITOR                 - Path to your preferred text editor
     if let Ok(archive_dir) = env::var("THERMALNOTE_ARCHIVEDIR") {
         std::fs::create_dir_all(&archive_dir).context("creating archive directory")?;
 
-        let archive_path = PathBuf::from(archive_dir).join(temp_file_name());
+        let archive_path = PathBuf::from(archive_dir).join(temp_file_name()?);
 
         std::fs::write(&archive_path, text).context("creating archive file")?;
     }
