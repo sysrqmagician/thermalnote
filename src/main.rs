@@ -6,6 +6,7 @@ use escpos::{
 };
 use std::{
     env,
+    path::PathBuf,
     process::Command,
     time::{SystemTime, UNIX_EPOCH},
 };
@@ -62,6 +63,13 @@ fn print_codepage_help() {
     println!("{}", last.0);
 }
 
+fn temp_file_name() -> String {
+    format!(
+        "thermalnote_{}",
+        SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis()
+    )
+}
+
 fn main() -> Result<()> {
     if let Some(arg) = env::args().skip(1).next() {
         if arg == "-h" || arg == "-help" || arg == "--help" {
@@ -74,14 +82,17 @@ Utility for printing quick notes using a thermal printer.
 
 > ENVIRONMENT VARIABLES <
 
-THERMALNOTE_VENDOR   - Vendor ID of your thermal printer (hex without 0x prefix)
-                       Example: 0ed6
-THERMALNOTE_PRODUCT  - Product ID of your thermal printer (hex without 0x prefix)
-                       Example: 06a6
-THERMALNOTE_CODEPAGE - Character encoding for text
-                       Example: PC437 or WPC1252
-EDITOR               - Path to your preferred text editor
-                       Example: /usr/bin/nano or /usr/bin/vim
+THERMALNOTE_VENDOR     - Vendor ID of your thermal printer (hex without 0x prefix)
+                         Example: 0ed6
+THERMALNOTE_PRODUCT    - Product ID of your thermal printer (hex without 0x prefix)
+                         Example: 06a6
+THERMALNOTE_CODEPAGE   - Character encoding for text
+                         Example: PC437 or WPC1252
+THERMALNOTE_ARCHIVEDIR - OPTIONAL. Directory in which to save copies of printed notes.
+                         If unset, no copy will be saved.
+                         Example: /home/user/thermalnotes
+EDITOR                 - Path to your preferred text editor
+                         Example: /usr/bin/nano or /usr/bin/vim
 
 > LICENSE <
 
@@ -121,10 +132,7 @@ EDITOR               - Path to your preferred text editor
     };
 
     let mut input_path = std::env::temp_dir();
-    input_path.push(format!(
-        "thermalnote_{}",
-        SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis()
-    ));
+    input_path.push(temp_file_name());
 
     let mut cmd = Command::new(env::var("EDITOR").context("reading EDITOR")?)
         .arg(input_path.as_os_str())
@@ -144,6 +152,14 @@ EDITOR               - Path to your preferred text editor
         .print_cut()?;
 
     std::fs::remove_file(input_path).context("deleting input file")?;
+
+    if let Ok(archive_dir) = env::var("THERMALNOTE_ARCHIVEDIR") {
+        std::fs::create_dir_all(&archive_dir).context("creating archive directory")?;
+
+        let archive_path = PathBuf::from(archive_dir).join(temp_file_name());
+
+        std::fs::write(&archive_path, text).context("creating archive file")?;
+    }
 
     Ok(())
 }
